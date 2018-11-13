@@ -45,4 +45,5 @@ summary(model)
 predicted_Y = predict(model, ds.test)
 
 # Measure performance of the model in terms of F1-Score 
-result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall")
+result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="0")
+result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="1")

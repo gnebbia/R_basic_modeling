@@ -49,5 +49,5 @@ predicted_Y_p = predict(classification_model, ds.test, type="response")
 predicted_Y   = factor(ifelse(predicted_Y_p > 0.5, 1, 0), levels=c(0,1))
 
 # Measure performance of the model in terms of F1-Score and precision/recall
-result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall")
-
+result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="0")
+result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="1")
