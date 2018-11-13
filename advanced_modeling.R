@@ -1,5 +1,4 @@
-# Example of Classification, using the logistic regression model and
-# predicting Default as a function of all the other variables
+# Example of Modeling using caret
 
 # Import necessary libraries
 library(dplyr)
@@ -24,30 +23,26 @@ ds = ds %>% select(-c('nace'))
 ## use the 70% of the dataset to build the model (training phase)
 ## and the remaining 30% of the dataset to assess the performance of the builded
 ## model (testing phase)
-train.index <- createDataPartition(ds$Default, p = .7, list = FALSE)
+train.index <- createDataPartition(ds$Default, p = .8, list = FALSE)
 
 ds.train = ds[train.index, ]
 ds.test  = ds[-train.index, ]
 
 
-# We build a classification model which can be used to predict Default, so Default
-# will be our dependent variable, change Default to whatever other categorical variable
-# to create a model which is predicting something else
-classification_model = glm(Default ~ ., family=binomial(), data=ds.train)
+# We build a classification model which can be used to predict Default,
+# by using method = "ranger" we use random forests
+# we can change algorithm by changing the string in method, we just need
+# to consult the caret documentation
+model <- train(Default ~ ., data = ds.train, method = "ranger")
 
-# Visualize all the characteristics of the classification model
-summary(classification_model)
-
+# Visualize all the characteristics of the regression model
+model
+summary(model)
 
 # Perform prediction on the test set
 # remember to set the type='response' in order to obrain probabilities,
 # since by default it will predict log odds of probability
-predicted_Y_p = predict(classification_model, ds.test, type="response")
+predicted_Y = predict(model, ds.test)
 
-# We convert probability prediction to a categorical variable, (0 or 1),
-# in order to compare it to the real response data contained in ds.test$Default
-predicted_Y   = factor(ifelse(predicted_Y_p > 0.5, 1, 0), levels=c(0,1))
-
-# Measure performance of the model in terms of F1-Score and precision/recall
+# Measure performance of the model in terms of F1-Score 
 result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall")
-
