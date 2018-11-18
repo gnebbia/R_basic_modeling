@@ -43,10 +43,23 @@ plot(ds$ROS, ds$ROCE, col='blue')
 
 # Correlation Matrix
 cmatrix = cor(ds %>% select(-c('Default','nace','nace_group')))
+
 corrplot(cmatrix, method='circle')
 corrplot(cmatrix, method='square')
 corrplot(cmatrix, method='ellipse')
 corrplot(cmatrix, method='shade')
+
+
+cmatrix_ng1 = cor(ds %>% filter(nace_group == 1) %>% select(-c('Default','nace','nace_group')))
+cmatrix_ng2 = cor(ds %>% filter(nace_group == 2) %>% select(-c('Default','nace','nace_group')))
+cmatrix_ng3 = cor(ds %>% filter(nace_group == 3) %>% select(-c('Default','nace','nace_group')))
+
+par(mfrow=c(1,3))
+corrplot(cmatrix_ng1, method='circle')
+corrplot(cmatrix_ng2, method='circle')
+corrplot(cmatrix_ng3, method='circle')
+
+par(mfrow=c(1,1))
 # corrplot(cmatrix, type='upper', order='hclust', p.mat=p.mat, sig.level=0.01)
 
 # Summary Statistics
