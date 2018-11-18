@@ -60,7 +60,7 @@ tmp <- do.call(data.frame,
                 sd = apply(ds, 2, sd),
                 median = apply(ds, 2, median),
                 min = apply(ds, 2, min),
-                max = apply(ds, 2, max),
+                max = apply(ds, 2, max)
                 ))
 
 
