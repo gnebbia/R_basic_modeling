@@ -55,7 +55,7 @@ formula
 set.seed(123)
 nn5 <- neuralnet(formula,
                  data = ds,
-                 hidden = c(5),
+                 hidden = c(4,2),
                  act.fct = "logistic",
                  linear.output = FALSE,
                  lifesign = "minimal")
