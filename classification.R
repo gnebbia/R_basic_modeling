@@ -5,6 +5,7 @@
 library(dplyr)
 library(readr)
 library(caret)
+#library(randomForest)
 
 
 ds = read_csv("companies_data.csv")
@@ -51,3 +52,17 @@ predicted_Y   = factor(ifelse(predicted_Y_p > 0.5, 1, 0), levels=c(0,1))
 # Measure performance of the model in terms of F1-Score and precision/recall
 result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="0")
 result <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="1")
+
+
+
+# Another approach with random forest
+model <- randomForest(Default ~ ., data=ds.train, importance=TRUE, ntree=500, mtry = 2, do.trace=100)
+predicted_Y = predict(model, ds.test)
+
+result0 <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="0")
+result1 <- confusionMatrix(predicted_Y, ds.test$Default, mode="prec_recall", positive="1")
+
+result0
+result1
+
+reprtree:::plot.getTree(model)

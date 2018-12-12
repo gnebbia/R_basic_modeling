@@ -5,6 +5,7 @@ library(caret)
 library(formattable)
 library(corrplot)
 library(GGally)
+library(randomForest)
 
 ds = read_csv("companies_data.csv")
 
@@ -16,6 +17,15 @@ ds$nace_group = as.factor(ds$nace_group)
 
 # print name of every column
 names(ds)
+
+ds1 = ds %>% select(-c('Default','nace','nace_group'))
+
+plot(ds1)
+
+regmodel = lm(total_asset_total_liab ~ poly(debt_ratio,2), ds1)
+summary(regmodel)
+plot(total_asset_total_liab ~ debt_ratio, ds1)
+points(ds$debt_ratio, fitted(regmodel), col='red')
 
 # Plot of distributions
 hist(ds$leverage_ratio, col='red', breaks=40, main='Leverage Ratio Distribution', xlab='Leverage Ratio')
@@ -44,7 +54,7 @@ plot(ds$ROS, ds$ROCE, col='blue')
 # Correlation Matrix
 cmatrix = cor(ds %>% select(-c('Default','nace','nace_group')))
 
-corrplot(cmatrix, method='circle')
+corrplot(cmatrix, method='circle', diag=F, type='upper')
 corrplot(cmatrix, method='square')
 corrplot(cmatrix, method='ellipse')
 corrplot(cmatrix, method='shade')
@@ -68,6 +78,20 @@ summary(ds)
 
 ds = ds %>% select(-c('nace', 'nace_group', 'Default'))
 
+dsc = ds %>% select(c('nace_group'))
+
+tmp <- do.call(data.frame, 
+           list(table(dsc)                ))
+
+tmp = as.data.frame(table(ds$nace_group))
+tmp <- do.call(data.frame, 
+           list(mean = apply(ds, 2, mean),
+                sd = apply(ds, 2, sd),
+                median = apply(ds, 2, median),
+                min = apply(ds, 2, min),
+                max = apply(ds, 2, max)
+                ))
+
 tmp <- do.call(data.frame, 
            list(mean = apply(ds, 2, mean),
                 sd = apply(ds, 2, sd),
@@ -77,7 +101,6 @@ tmp <- do.call(data.frame,
                 ))
 
 
-# Fancy Stuff
 widget_formattable = formattable(tmp, list(
     mean = color_tile('lightblue', 'white'),
     sd = color_tile('lightblue', 'white'),
@@ -88,4 +111,13 @@ widget_formattable = formattable(tmp, list(
 ))
 widget_formattable
 
+# Fancy Stuff
+widget_formattable = formattable(tmp, list(
+    Freq = color_tile('lightblue', 'white')
+))
+widget_formattable
+
 ggparcoord(ds, columns = 1:11,  scale = 'globalminmax')
+
+
+

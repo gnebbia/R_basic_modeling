@@ -49,3 +49,12 @@ rsquare(regression_model, ds.test)
 
 
 
+
+regmodel = lm(total_asset_total_liab ~ poly(debt_ratio,2), ds1)
+summary(regmodel)
+plot(total_asset_total_liab ~ debt_ratio, ds1)
+points(ds$debt_ratio, fitted(regmodel), col='red')
+
+
+rmse(regmodel, ds.test)
+rsquare(regmodel, ds.test)
